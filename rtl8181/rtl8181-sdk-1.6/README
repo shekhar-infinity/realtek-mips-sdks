@@ -1,0 +1,41 @@
+		RTL8181 Software Development Kit- v1.6
+		--------------------------------------
+
+Package List
+============
+  1. rtl8181-toolchain-1.1.tar.gz - containing the toolchain to build Linux
+     kernel and application for RTL8181.
+  2. rtl8181-btcode-3.2.tar.gz - containing the source code of boot loader.
+  3. rtl8181-linux-1.7.tar.gz - containing Linux kernel source and the source
+     tree for the all applications used in RTL8181.
+
+
+Environment
+===========
+  RedHat 7.3 is recommended.
+
+
+Install ToolChain
+=================
+  1. Copy 'rtl8181-toolchain-1.1.tar.gz' to a file directory on a Linux PC.
+  2. Type 'tar xfzv rtl8181-toolchain-1.1.tar.gz' to extract the package.
+  3. Read file 'rtl8181-toolchain-1.1\INSTALL' and follow the instruction
+     to install the toolchain.
+
+
+Install and Build Boot Loader
+=============================
+  1. Copy 'rtl8181-btcode-3.2.tar.gz' to a file directory on a Linux PC.
+  2. Type 'tar xfzv rtl8181-btcode-3.2.tar.gz' to extract the package.
+  3. Read file 'rtl8181-btcode-3.2\INSTALL' and follow the instruction to
+     install and build the package.
+
+
+Install and Build Linux System
+==============================
+  1. Copy 'rtl8181-linux-1.7.tar.gz' to a file directory on a Linux PC.
+  2. Type 'tar xfzv rtl8181-linux-1.7.tar.gz' to extract the package.
+  3. Read 'README' and 'INSTALL' files in 'rtl8181-linux-1.7' directory,
+     and follow the instruction to install and build the package.
+
+2-16-2004
