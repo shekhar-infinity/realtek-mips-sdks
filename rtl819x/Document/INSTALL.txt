@@ -1,0 +1,98 @@
+0. Introduction
+   This file will show you how to build the RTL8198C_8954E linux system. 
+   Besides, It will guide you how to download the built image to Realtek EV (Evaluation) board for testing. 
+   PLEASE NOTE, the download image will overwrite the original image existed in the flash memory of EV board.
+
+1. Build Environment
+   Fedora 9
+   Ubuntu 8.10/9.10
+
+2. Quick start
+   - tar -zxvf rtl819x.tar.gz
+   - cd rtl819x/
+   - make menuconfig:
+        --for RTL8198C_8954E
+                Select Target(rtl8198C_8954E)
+                Select Kernel (linux-3.10)
+                Select Busybox (busybox-1.13)
+                Select toolchain (msdk-4.4.7-mips-EB-3.10-0.9.33-m32t-131227b)
+                Selected Board Configuration (RTL8198C/8954E+8814+8194 GW)
+                Select Load default settings
+        --for RTL8198C_8954E MP
+                Selected Target (rtl8198C_8954E)
+                Selected Kernel (linux-3.10)
+                Selected Busybox (busybox-1.13)
+                Selected toolchain(msdk-4.4.7-mips-EB-3.10-0.9.33-m32t-131227b)
+                Selected Board Configuration (RTL8198CD/8954E+8814+8194 MP)
+                Select Load default settings
+   - make
+
+3. make image
+   there are four steps for making image:
+   - make users
+     build the users applications
+   - make linux
+     build the kernel files
+   - make romfs
+     copy all the application binary files into romfs
+   - make image
+     compress the root.bin and linux.bin
+
+4. build bootloader
+   - ensure the source code of sdk is existent, do command "tar -zxvf rtl819x.tar.gz" first, it include the toolchain.
+   - add environment variable(assume you source code directory is /rtl819x):
+       --for rtl8198C_8954E
+                 "export PATH=/rtl819x/toolchain/msdk-4.4.7-mips-EB-3.10-0.9.33-m32t-131227b/bin:$PATH"
+   - cd bootcode_rtl8198c
+   - make menuconfig:
+       --for rtl8198c
+                select 'RTL8198C for 8198C Product
+                select 'SPI_FLASH' for flash type
+                select 'BOOT_SIO_8198_8196C' for SPI IO type
+                select 'DDR2/DDR3' for SDRAM Type
+                select 'Giga' for SWITCH type
+                enable [*]Config Spi flash Number
+           you can do command "cp def-rtl8198c-config .config" before 'make menuconfig',and it will do the default setting for rtl8198C bootcode.
+   - make 
+   - ==> you will find boot.bin in ./btcode
+   - ==> 'boot.bin' is the bootloader image
+
+5. binary file list
+   - bootcode_rtl8198c/btcode/boot.bin : bootloader image
+   - rtl819x/image/root.bin            : rootfs binary image
+   - rtl819x/image/linux.bin           : linux-3.10 kernel image
+   - rtl819x/image/webpages-gw.bin     : the webpages image
+   - rtl819x/image/fw.bin              : the image include root.bin/linux.bin/webpages-gw.bin
+    	  
+6. Download image files to Realtek EV (evaluation) board for testing
+   - Use a RS232 cable to connect COM port between a LINUX PC and EV board.
+   - Connect LINUX PC Ethernet port to the LAN port of EV board. Set PC IP
+     address to 192.168.1.x (e.g., type 'ifconfig eth0 192.168.1.1').
+   - Start a COM port console (e.g., minicom), and set COM port setting to
+     38400, 8N1 and no flow control.
+   - Power on EV board, and press 'ESC' key in COM port console to escape the
+     booting process. If ok, you may see "<RealTek>" prompt in the console.
+   - Start a TFTP client in LINUX PC, and connect to 192.168.1.6. Set file
+     type to binary mode to TFTP server of EV board, put root.bin if gw 
+     platform to TFTP server, and put root image file(rtl819x/image/root.bin) to TFTP server,
+     then put the webpages image file and  linux image files to TFTP server.
+     After linux.bin file upload had finished, boot code will auto booting.
+   - NOTE:you can do the same thing on Windos PC.
+
+7. Build ramdisk for MP using "root" user
+   - modify /etc/fstab
+     vim /etc/fstab
+     add "/dev/ram /mnt/ramdisk ext2 suid,noauto,user,rw     0 0" in the file
+   - cd /mnt
+     mkdir ramdisk
+   - cd /bin
+     chmod +s mknod
+   - cd /dev
+     ln -sf ram1 ram
+
+NOTE:
+   - In order to create dev file in romfs, /bin/mknod should be suid.
+     Do the command "chmod +s /bin/mknod" as root privilege.
+   - If you don't use the default setting to make bootcode, make sure the size of boot.bin is less than 24K.
+
+2015/06/09
